@@ -1,0 +1,13 @@
+# Ignorar la carpeta .vs/
+.vs/
+
+# Ignorar los archivos de build
+bin/
+obj/
+
+# Ignorar archivos de usuario
+*.user
+*.suo
+
+# Ignorar otros archivos temporales
+*.log

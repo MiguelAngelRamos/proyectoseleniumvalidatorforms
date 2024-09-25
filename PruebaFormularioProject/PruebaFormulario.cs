@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 
 namespace PruebaFormularioProject
@@ -14,8 +15,8 @@ namespace PruebaFormularioProject
         {
             // Método que se ejecuta antes de cada test
             driver = new ChromeDriver();
-            driver.Manage().Window.Maximize(); // Maximizar la ventana para tener una mejor visualización
-
+            // driver.Manage().Window.Maximize(); // Maximizar la ventana para tener una mejor visualización
+            driver.Manage().Window.Size = new System.Drawing.Size(600, 400); // Tamaño de la ventana
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10); // Espera implícita de 10 segundos
             //Navegar a la página de la aplicación
             driver.Navigate().GoToUrl("https://seleniumtestweb.netlify.app/");
@@ -59,11 +60,15 @@ namespace PruebaFormularioProject
 
             // Seleccionamos un radio button
             IWebElement radio1 = driver.FindElement(By.Id("radio1")); // Radio button 1
-            radio1.Click(); // Seleccionar el radio button 1
+            Actions actions = new Actions(driver);
+            actions.MoveToElement(radio1).Click().Perform();
+            // radio1.Click(); // Seleccionar el radio button 1
 
             // Marcar el checkbox requerido
             IWebElement checkbox = driver.FindElement(By.Id("checkbox1")); // Checkbox 1
-            checkbox.Click(); // Marcar el checkbox 1
+            Actions actionsCheck = new Actions(driver);
+            actionsCheck.MoveToElement(checkbox).Click().Perform();
+            // checkbox.Click(); // Marcar el checkbox 1
         }
     }
 }

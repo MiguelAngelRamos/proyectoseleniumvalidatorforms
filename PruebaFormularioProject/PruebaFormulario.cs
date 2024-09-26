@@ -3,6 +3,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
+using SeleniumExtras.WaitHelpers;
 
 namespace PruebaFormularioProject
 {
@@ -46,7 +47,7 @@ namespace PruebaFormularioProject
             IWebElement inputTexto = driver.FindElement(By.Id("input-texto")); // Campo Texto
             inputTexto.Clear(); // Limpiar el campo
             inputTexto.SendKeys("Sofia"); // Escribir un texto
-            
+
 
             // Encontrar el campo email por su ID y escribimos un email válido
             IWebElement inputEmail = driver.FindElement(By.Id("input-email")); // Campo Email
@@ -64,7 +65,7 @@ namespace PruebaFormularioProject
 
             // Seleccionamos un radio button
             IWebElement radio1 = driver.FindElement(By.Id("radio1")); // Radio button 1
-          
+
             actions.MoveToElement(radio1).Click().Perform();
             // radio1.Click(); // Seleccionar el radio button 1
 
@@ -77,6 +78,10 @@ namespace PruebaFormularioProject
             IWebElement botonEnviar = driver.FindElement(By.Id("boton-enviar")); // Botón Enviar
             actions.MoveToElement(botonEnviar).Click().Perform(); // Hacer click en el botón
 
+            // Esperamos hasta que se muestre el mensaje de éxito y sea visible
+
+            wait.Until(ExpectedConditions.ElementIsVisible(By.Id("mensaje-exito")));
+
             // id mensaje-exito
             // ¡Formulario enviado con éxito!
             // Verificamos que el mensaje de éxito se muestra
@@ -84,9 +89,12 @@ namespace PruebaFormularioProject
             // Aserción con FluentAssertions
             // Displayed significa que el mensaje es visible
             mensajeExito.Displayed.Should().BeTrue("El mensaje de exito debería mostrarse"); // Verificar que el mensaje de éxito se muestra
-                  
 
-              
+            // Verificar que no hay mensajes de error visibles
+            bool hayErrores = driver.FindElements(By.ClassName("invalid-feedback")).Any(element => element.Displayed); // Verificar si hay mensajes de error
+            hayErrores.Should().BeFalse("No debería haber mensajes de error visibles"); // Verificar que no hay mensajes de error visibles
+
+
         }
     }
 }

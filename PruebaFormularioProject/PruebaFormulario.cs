@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium;
+﻿using FluentAssertions;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
@@ -45,6 +46,7 @@ namespace PruebaFormularioProject
             IWebElement inputTexto = driver.FindElement(By.Id("input-texto")); // Campo Texto
             inputTexto.Clear(); // Limpiar el campo
             inputTexto.SendKeys("Sofia"); // Escribir un texto
+            
 
             // Encontrar el campo email por su ID y escribimos un email válido
             IWebElement inputEmail = driver.FindElement(By.Id("input-email")); // Campo Email
@@ -70,6 +72,21 @@ namespace PruebaFormularioProject
             IWebElement checkbox = driver.FindElement(By.Id("checkbox1")); // Checkbox 1
             actions.MoveToElement(checkbox).Click().Perform();
             // checkbox.Click(); // Marcar el checkbox 1
+
+            // Hacemos Click en el botón "Enviar" id=boton-enviar
+            IWebElement botonEnviar = driver.FindElement(By.Id("boton-enviar")); // Botón Enviar
+            actions.MoveToElement(botonEnviar).Click().Perform(); // Hacer click en el botón
+
+            // id mensaje-exito
+            // ¡Formulario enviado con éxito!
+            // Verificamos que el mensaje de éxito se muestra
+            IWebElement mensajeExito = driver.FindElement(By.Id("mensaje-exito")); // Mensaje de éxito
+            // Aserción con FluentAssertions
+            // Displayed significa que el mensaje es visible
+            mensajeExito.Displayed.Should().BeTrue("El mensaje de exito debería mostrarse"); // Verificar que el mensaje de éxito se muestra
+                  
+
+              
         }
     }
 }

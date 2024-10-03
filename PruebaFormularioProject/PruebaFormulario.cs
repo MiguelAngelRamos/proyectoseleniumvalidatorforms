@@ -96,5 +96,56 @@ namespace PruebaFormularioProject
 
 
         }
+
+        [Test]
+        public void PruebaCamposRequeridosVacios()
+        {
+            Console.WriteLine("Iniciando prueba de campos requeridos vacíos..");
+        
+            // Hacemos Click en el botón "Enviar" id=boton-enviar
+            IWebElement botonEnviar = driver.FindElement(By.Id("boton-enviar")); // Botón Enviar
+            actions.MoveToElement(botonEnviar).Click().Perform(); // Hacer click en el botón
+        
+           
+        
+            IWebElement inputTexto = driver.FindElement(By.Id("input-texto"));
+            inputTexto.GetAttribute("class").Should().Contain("is-invalid");
+        
+            IWebElement mensajeErrorTexto = inputTexto.FindElement(By.XPath("following-sibling::div[@class='invalid-feedback']"));
+            mensajeErrorTexto.Text.Should().Be("El texto debe tener más de 3 caracteres.");
+        
+            IWebElement inputEmail = driver.FindElement(By.Id("input-email"));
+            inputEmail.GetAttribute("class").Should().Contain("is-invalid");
+            IWebElement mensajeErrorEmail = inputEmail.FindElement(By.XPath("following-sibling::div[@class='invalid-feedback']"));
+            mensajeErrorEmail.Text.Should().Be("Por favor, ingresa un correo electrónico válido (nombre@organizacion.dominio)");
+        
+            IWebElement inputPassword = driver.FindElement(By.Id("input-password"));
+            inputPassword.GetAttribute("class").Should().Contain("is-invalid");
+        
+            IWebElement mensajeErrorPassword = inputPassword.FindElement(By.XPath("following-sibling::div[@class='invalid-feedback']"));
+            mensajeErrorPassword.Text.Should().Be("La contraseña debe tener más de 8 caracteres.");
+            // select-opciones
+        
+            IWebElement selectOpciones = driver.FindElement(By.Id("select-opciones"));
+            selectOpciones.GetAttribute("class").Should().Contain("is-invalid");
+        
+            IWebElement mensajeErrorSelect = selectOpciones.FindElement(By.XPath("following-sibling::div[@class='invalid-feedback']"));
+            mensajeErrorSelect.Text.Should().Be("Por favor, selecciona una opción.");
+            // select-opciones
+        
+            // Seleccionamos un radio button
+            IWebElement feedBackRadio = driver.FindElement(By.CssSelector("fieldset .invalid-feedback")); // Radio button 1
+            feedBackRadio.Text.Should().Be("Por favor, selecciona una opción de radio.");
+        
+            // Verificar el checbox
+            IWebElement checkbox = driver.FindElement(By.Id("checkbox1"));
+            checkbox.GetAttribute("class").Should().Contain("is-invalid");
+        
+            // Verificamos que el mensaje de éxito no se muestra
+            bool mensajeExito = driver.FindElements(By.Id("mensaje-exito")).Any(element => element.Displayed);
+            mensajeExito.Should().BeFalse("el mensaje de exito no deberia mostrarse");
+        
+            Console.WriteLine("Prueba de campos requeridos vacios completada");
+        }
     }
 }

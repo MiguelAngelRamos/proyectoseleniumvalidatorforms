@@ -147,5 +147,71 @@ namespace PruebaFormularioProject
         
             Console.WriteLine("Prueba de campos requeridos vacios completada");
         }
+
+                [Test]
+        public void PruebaFormatoCorreoInvalido()
+        {
+            Console.WriteLine("Iniciando prueba de formato de correo electrónico inválido...");
+
+            // Encontrar los elementos de la página
+            // Encontrar el campo texto por su ID y escribimos un texto válido
+            IWebElement inputTexto = driver.FindElement(By.Id("input-texto")); // Campo Texto
+            inputTexto.Clear(); // Limpiar el campo
+            inputTexto.SendKeys("Sofia"); // Escribir un texto
+
+
+            // Encontrar el campo email por su ID y escribimos un email válido
+        
+            IWebElement inputEmail = driver.FindElement(By.Id("input-email")); // Obtengo el campo email
+            inputEmail.Clear(); // Limpiamos el campo
+            inputEmail.SendKeys("usuario@dominio"); // Escribo un correo inválido
+            wait.Until(d => inputEmail.GetAttribute("class").Should().Contain("is-invalid"));
+            IWebElement mensajeErrorEmail = inputEmail.FindElement(By.XPath("following-sibling::div[@class='invalid-feedback']"));
+            mensajeErrorEmail.Text.Should().Be("Por favor, ingresa un correo electrónico válido (nombre@organizacion.dominio)");
+
+            // Encontrar el campo de contraseña por su ID y escribimos una contraseña válida
+            IWebElement inputPassword = driver.FindElement(By.Id("input-password")); // Campo Contraseña
+            inputPassword.Clear(); // Limpiar el campo
+            inputPassword.SendKeys("secretoabsoluto"); // Escribir un email
+
+            // Seleccionamos una opción valida del select
+            SelectElement selectOpciones = new SelectElement(driver.FindElement(By.Id("select-opciones")));
+            selectOpciones.SelectByValue("opcion1");
+
+            // Seleccionamos un radio button
+            IWebElement radio1 = driver.FindElement(By.Id("radio1")); // Radio button 1
+
+            actions.MoveToElement(radio1).Click().Perform();
+            // radio1.Click(); // Seleccionar el radio button 1
+
+            // Marcar el checkbox requerido
+            IWebElement checkbox = driver.FindElement(By.Id("checkbox1")); // Checkbox 1
+            actions.MoveToElement(checkbox).Click().Perform();
+            // checkbox.Click(); // Marcar el checkbox 1
+
+            // Hacemos Click en el botón "Enviar" id=boton-enviar
+            IWebElement botonEnviar = driver.FindElement(By.Id("boton-enviar")); // Botón Enviar
+            actions.MoveToElement(botonEnviar).Click().Perform(); // Hacer click en el botón
+
+            // Esperamos hasta que se muestre el mensaje de éxito y sea visible
+
+            wait.Until(ExpectedConditions.ElementIsVisible(By.Id("mensaje-exito")));
+
+            // id mensaje-exito
+            // ¡Formulario enviado con éxito!
+            // Verificamos que el mensaje de éxito se muestra
+            IWebElement mensajeExito = driver.FindElement(By.Id("mensaje-exito")); // Mensaje de éxito
+            // Aserción con FluentAssertions
+            // Displayed significa que el mensaje es visible
+            mensajeExito.Displayed.Should().BeTrue("El mensaje de exito debería mostrarse"); // Verificar que el mensaje de éxito se muestra
+
+            // Verificar que no hay mensajes de error visibles
+            bool hayErrores = driver.FindElements(By.ClassName("invalid-feedback")).Any(element => element.Displayed); // Verificar si hay mensajes de error
+            hayErrores.Should().BeFalse("No debería haber mensajes de error visibles"); // Verificar que no hay mensajes de error visibles
+
+            // TEST DE CORREO PRIMERA PROPUESTA
+   
+
+        }
     }
 }

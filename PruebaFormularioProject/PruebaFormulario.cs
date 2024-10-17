@@ -192,7 +192,120 @@ namespace PruebaFormularioProject
          mensajeErrorEmail.Displayed.Should().BeTrue("El mensaje de error debería ser visible para un correo inválido.");
      }
 
+        [Test]
+        public void PruebaLongitudMinimaTextoYPassword()
+        {
+            Console.WriteLine("Iniciando prueba de longitud mínima en campo de texto y contraseña...");
+
+            // Ingresar menos de 4 caracteres en el campo de texto
+            IWebElement inputTexto = driver.FindElement(By.Id("input-texto"));
+            inputTexto.Clear();
+            inputTexto.SendKeys("abc");
+
+            // Ingresar menos de 9 caracteres en el campo de contraseña
+            IWebElement inputPassword = driver.FindElement(By.Id("input-password"));
+            inputPassword.Clear();
+            inputPassword.SendKeys("12345678");
+
+            // Hacer click en el botón Enviar
+            IWebElement botonEnviar = driver.FindElement(By.Id("boton-enviar"));
+            actions.MoveToElement(botonEnviar).Click().Perform();
+
+            // Verificar que los mensajes de error se muestran correctamente
+            IWebElement mensajeErrorTexto = inputTexto.FindElement(By.XPath("following-sibling::div[@class='invalid-feedback']"));
+            mensajeErrorTexto.Text.Should().Be("El texto debe tener más de 3 caracteres.");
+
+            IWebElement mensajeErrorPassword = inputPassword.FindElement(By.XPath("following-sibling::div[@class='invalid-feedback']"));
+            mensajeErrorPassword.Text.Should().Be("La contraseña debe tener más de 8 caracteres.");
+
+            Console.WriteLine("Prueba de longitud mínima en texto y contraseña completada.");
+        }
 
 
- }
+        [Test]
+        public void PruebaSeleccionDesplegable()
+        {
+            Console.WriteLine("Iniciando prueba de selección en el campo desplegable...");
+
+            // Dejar la opción por defecto en el campo desplegable
+            SelectElement selectOpciones = new SelectElement(driver.FindElement(By.Id("select-opciones")));
+            selectOpciones.SelectByIndex(0); // Seleccionar la opción "--Seleccione--"
+
+            // Hacer click en el botón Enviar
+            IWebElement botonEnviar = driver.FindElement(By.Id("boton-enviar"));
+            actions.MoveToElement(botonEnviar).Click().Perform();
+
+            // Verificar el mensaje de error para el campo desplegable
+            IWebElement mensajeErrorSelect = driver.FindElement(By.XPath("//div[@class='invalid-feedback' and contains(text(),'Por favor, selecciona una opción.')]"));
+            mensajeErrorSelect.Displayed.Should().BeTrue("El mensaje de error para el campo desplegable debería ser visible.");
+
+            Console.WriteLine("Prueba de selección en el campo desplegable completada.");
+        }
+
+        [Test]
+        public void PruebaSeleccionRadioButton()
+        {
+            Console.WriteLine("Iniciando prueba de selección de radio button...");
+
+            // No seleccionar ningún radio button
+
+            // Hacer click en el botón Enviar
+            IWebElement botonEnviar = driver.FindElement(By.Id("boton-enviar"));
+            actions.MoveToElement(botonEnviar).Click().Perform();
+
+            // Verificar el mensaje de error para los radio buttons
+            IWebElement mensajeErrorRadio = driver.FindElement(By.CssSelector("fieldset .invalid-feedback"));
+            mensajeErrorRadio.Text.Should().Be("Por favor, selecciona una opción de radio.");
+
+            Console.WriteLine("Prueba de selección de radio button completada.");
+        }
+
+        [Test]
+        public void PruebaCheckboxRequerido()
+        {
+            Console.WriteLine("Iniciando prueba del checkbox requerido...");
+
+            // No marcar el checkbox
+
+            // Hacer click en el botón Enviar
+            IWebElement botonEnviar = driver.FindElement(By.Id("boton-enviar"));
+            actions.MoveToElement(botonEnviar).Click().Perform();
+
+            // Verificar el mensaje de error para el checkbox
+            IWebElement checkbox = driver.FindElement(By.Id("checkbox1"));
+            checkbox.GetAttribute("class").Should().Contain("is-invalid");
+
+            Console.WriteLine("Prueba del checkbox requerido completada.");
+        }
+
+        [Test]
+        public void PruebaBotonRestablecer()
+        {
+            Console.WriteLine("Iniciando prueba del botón Restablecer...");
+
+            // Completar algunos campos
+            IWebElement inputTexto = driver.FindElement(By.Id("input-texto"));
+            inputTexto.Clear();
+            inputTexto.SendKeys("Sofia");
+
+            IWebElement inputEmail = driver.FindElement(By.Id("input-email"));
+            inputEmail.Clear();
+            inputEmail.SendKeys("sofia@selenium.com");
+
+            // Hacer click en el botón Restablecer
+            IWebElement botonRestablecer = driver.FindElement(By.Id("boton-restablecer"));
+            botonRestablecer.Click();
+
+            // Verificar que los campos están vacíos o en su estado inicial
+            inputTexto.GetAttribute("value").Should().BeEmpty();
+            inputEmail.GetAttribute("value").Should().BeEmpty();
+
+            // Verificar que las clases de validación se eliminaron
+            inputTexto.GetAttribute("class").Should().NotContain("is-invalid");
+            inputEmail.GetAttribute("class").Should().NotContain("is-invalid");
+
+            Console.WriteLine("Prueba del botón Restablecer completada.");
+        }
+
+    }
 }
